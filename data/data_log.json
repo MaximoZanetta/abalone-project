@@ -1,0 +1,21 @@
+{
+    "version": "v1",
+    "created_at": "2026-10-23T03:45:10.870375+00:00",
+    "source": "data/raw/abalone_raw.csv",
+    "output": "data/processed/abalone_clean.csv",
+    "original_rows": 4177,
+    "processed_rows": 4174,
+    "removed_rows": 3,
+    "removed_indices": [
+        1257,
+        2051,
+        3996
+    ],
+    "transformations": [
+        "Removed rows with height <= 0",
+        "Removed rows with height > length",
+        "Removed rows with shellweight > wholeweight",
+        "Created age = rings + 1.5",
+        "One-hot encoded sex into sex_F, sex_I, sex_M"
+    ]
+}
