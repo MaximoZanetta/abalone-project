@@ -1,0 +1,2 @@
+experiment_id,timestamp,model_version,n_estimators,random_state,MAE,RMSE,R2
+af269327-ea75-4d8e-95e9-dcb5ed73cbc3,2026-10-23T04:05:15.309072+00:00,v1,100,42,1.503211339828325,2.1656009957916833,0.5907834755693602
