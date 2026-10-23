@@ -1,0 +1,19 @@
+{
+    "model_version": "v1",
+    "algorithm": "RandomForestRegressor",
+    "random_state": 42,
+    "test_size": 0.2,
+    "cv_folds": 3,
+    "cv_scoring": "neg_mean_absolute_error",
+    "best_cv_mae": 1.5238703622550398,
+    "best_hyperparameters": {
+        "random_forest__max_depth": 12,
+        "random_forest__min_samples_leaf": 3,
+        "random_forest__n_estimators": 150
+    },
+    "test_metrics": {
+        "MAE": 1.503211339828325,
+        "RMSE": 2.1656009957916833,
+        "R2": 0.5907834755693602
+    }
+}

@@ -69,3 +69,24 @@ Los comandos para ejecutar el preprocesamiento y entrenar el modelo se agregará
 El proyecto utiliza uv para mantener un entorno consistente y Git para registrar los cambios.
 
 Las transformaciones de datos, las semillas aleatorias, los hiperparámetros y las métricas de los modelos serán documentados para facilitar la reproducción de los experimentos.
+
+## Entrenamiento y evaluación del modelo
+
+Para entrenar el modelo de regresión sobre el dataset Abalone procesado, ejecutar:
+
+```bash
+uv run python src/train_model.py
+```
+
+El script:
+
+- Carga el dataset procesado.
+- Utiliza `age` como variable objetivo y excluye `rings` para evitar data leakage.
+- Divide los datos en entrenamiento (80%) y test (20%), con semilla fija.
+- Entrena un `RandomForestRegressor` mediante un Pipeline de scikit-learn.
+- Evalúa el modelo utilizando MAE, RMSE y R².
+- Guarda el modelo comprimido en `models/model_v1.pkl`.
+- Registra las métricas e hiperparámetros en `results/metrics_v1.json`.
+- Agrega una entrada al historial de experimentos en `results/experiments_log.csv`.
+
+El archivo de experimentos registra cada ejecución con un identificador y una marca temporal, por lo que cambia cada vez que se ejecuta el entrenamiento.
