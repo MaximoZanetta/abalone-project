@@ -1,2 +1,3 @@
 experiment_id,timestamp,model_version,hyperparameters,random_state,MAE,RMSE,R2
 c41146d9-5c44-4453-8121-a0bccf118316,2026-10-25T22:41:06.111863+00:00,v1,"{""random_forest__max_depth"": 12, ""random_forest__min_samples_leaf"": 3, ""random_forest__n_estimators"": 150}",42,1.503211339828325,2.1656009957916833,0.5907834755693602
+81fc7d22-0924-41f6-bc85-fe4745b5839f,2026-10-25T22:46:13.895619+00:00,v2,"{""random_forest__max_depth"": 8, ""random_forest__max_features"": 1.0, ""random_forest__min_samples_leaf"": 8, ""random_forest__n_estimators"": 200}",42,1.4838675615282984,2.148503322313683,0.5972195926956938
