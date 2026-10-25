@@ -24,11 +24,11 @@ El trabajo se enfoca en la reproducibilidad, el versionado de código y datos, e
 
 ### 1. Clonar el repositorio
 
-`git clone URL_DEL_REPOSITORIO`
+`git clone https://github.com/MaximoZanetta/abalone-project.git`
 
 Ingresar al directorio del proyecto:
 
-`cd abalone_project`
+`cd abalone-project`
 
 ### 2. Instalar uv
 
@@ -48,7 +48,7 @@ Este comando recrea el entorno virtual utilizando las versiones de dependencias 
 
 ### 5. Ejecutar el proyecto
 
-Los comandos para ejecutar el preprocesamiento y entrenar el modelo se agregarán en los ejercicios siguientes.
+Ver las secciones **Preprocesamiento** y **Entrenamiento y evaluación del modelo** más abajo.
 
 ## Estructura del proyecto
 
@@ -70,6 +70,24 @@ El proyecto utiliza uv para mantener un entorno consistente y Git para registrar
 
 Las transformaciones de datos, las semillas aleatorias, los hiperparámetros y las métricas de los modelos serán documentados para facilitar la reproducción de los experimentos.
 
+## Preprocesamiento
+
+Para generar `data/processed/abalone_clean.csv` y `data/data_log.json` a partir de `data/raw/abalone_raw.csv`:
+
+```bash
+uv run python src/preprocess.py
+```
+
+El script:
+
+- Elimina registros físicamente inconsistentes (`height <= 0`, `height > length`, `shellweight > wholeweight`). Ese es el criterio declarado de valores atípicos.
+- Crea `age = rings + 1.5`.
+- Codifica `sex` con one-hot (`sex_F`, `sex_I`, `sex_M`).
+- No escala variables: el escalado, de ser necesario, va dentro del Pipeline de entrenamiento para no filtrar información del test.
+- Registra en `data/data_log.json` la fecha, el hash SHA-256 del archivo original, los parámetros, las versiones de Python/pandas y las filas eliminadas.
+
+Cada vez que se modifica `preprocess.py`, el CSV procesado se regenera y se commitea en el mismo commit.
+
 ## Entrenamiento y evaluación del modelo
 
 Para entrenar el modelo de regresión sobre el dataset Abalone procesado, ejecutar:
@@ -90,3 +108,11 @@ El script:
 - Agrega una entrada al historial de experimentos en `results/experiments_log.csv`.
 
 El archivo de experimentos registra cada ejecución con un identificador y una marca temporal, por lo que cambia cada vez que se ejecuta el entrenamiento.
+
+## Reproducibilidad del registro de datos
+
+**¿Qué información de `data_log.json` es imprescindible para reconstruir el dataset?** El archivo de origen y una forma de verificar que es el mismo (hash SHA-256), cada transformación con sus parámetros exactos y en orden (fórmula de `age`, reglas de outliers con sus umbrales, tipo de codificación) y las versiones de Python y pandas. Opcionalmente, los índices eliminados sirven para comprobar el resultado.
+
+**¿Alcanza el registro actual?** Con el hash, los parámetros y las versiones registradas, sí alcanza para reconstruirlo, siempre que el código de `preprocess.py` del mismo commit esté disponible. Aun así, el registro describe los pasos en texto y no los ejecuta: la reconstrucción depende de que el script se mantenga sincronizado con el log. Antes de este ajuste faltaban el hash y los parámetros, y el timestamp hacía que el log cambiara en cada ejecución.
+
+**¿Y si el dataset pesara varios GB o cambiara cada semana?** Git guarda cada versión de los archivos binarios o grandes completa en el historial, así que el repositorio crecería sin control, los clones serían lentos y podrían superarse los límites de GitHub. Con cambios semanales cada versión se duplicaría en el historial y los diffs no serían legibles. La alternativa es versionar solo metadatos y hashes en Git y guardar los datos en un almacenamiento externo (por ejemplo DVC, Git LFS o un bucket), de modo que cada commit apunte a una versión concreta del dato.
