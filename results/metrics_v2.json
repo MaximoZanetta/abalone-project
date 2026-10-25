@@ -1,0 +1,21 @@
+{
+    "model_version": "v2",
+    "algorithm": "RandomForestRegressor",
+    "config": "rf_wide",
+    "random_state": 42,
+    "test_size": 0.2,
+    "cv_folds": 3,
+    "cv_scoring": "neg_mean_absolute_error",
+    "best_cv_mae": 1.5069477997867906,
+    "best_hyperparameters": {
+        "random_forest__max_depth": 8,
+        "random_forest__max_features": 1.0,
+        "random_forest__min_samples_leaf": 8,
+        "random_forest__n_estimators": 200
+    },
+    "test_metrics": {
+        "MAE": 1.4838675615282984,
+        "RMSE": 2.148503322313683,
+        "R2": 0.5972195926956938
+    }
+}

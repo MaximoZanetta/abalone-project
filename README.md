@@ -116,3 +116,7 @@ El archivo de experimentos registra cada ejecución con un identificador y una m
 **¿Alcanza el registro actual?** Con el hash, los parámetros y las versiones registradas, sí alcanza para reconstruirlo, siempre que el código de `preprocess.py` del mismo commit esté disponible. Aun así, el registro describe los pasos en texto y no los ejecuta: la reconstrucción depende de que el script se mantenga sincronizado con el log. Antes de este ajuste faltaban el hash y los parámetros, y el timestamp hacía que el log cambiara en cada ejecución.
 
 **¿Y si el dataset pesara varios GB o cambiara cada semana?** Git guarda cada versión de los archivos binarios o grandes completa en el historial, así que el repositorio crecería sin control, los clones serían lentos y podrían superarse los límites de GitHub. Con cambios semanales cada versión se duplicaría en el historial y los diffs no serían legibles. La alternativa es versionar solo metadatos y hashes en Git y guardar los datos en un almacenamiento externo (por ejemplo DVC, Git LFS o un bucket), de modo que cada commit apunte a una versión concreta del dato.
+
+## Resultados
+
+- **v2** (`exp/hiperparametros`, Random Forest con grilla ampliada: `max_depth=8`, `min_samples_leaf=8`, `max_features=1.0`, `n_estimators=200`): MAE 1.4839, RMSE 2.1485, R² 0.5972 (mejora levemente sobre v1: MAE 1.5032).
