@@ -124,7 +124,7 @@ experimento = {
     "experiment_id": str(uuid.uuid4()),
     "timestamp": datetime.now(timezone.utc).isoformat(),
     "model_version": "v1",
-    "n_estimators": 100,
+    "hyperparameters": json.dumps(grid.best_params_, sort_keys=True),
     "random_state": SEED,
     "MAE": float(mae),
     "RMSE": float(rmse),
