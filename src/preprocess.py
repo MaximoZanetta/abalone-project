@@ -1,8 +1,11 @@
 
-import pandas as pd
+import hashlib
 import json
+import platform
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import date
+
+import pandas as pd
 
 # Rutas del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,6 +13,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_PATH = BASE_DIR / "data/raw/abalone_raw.csv"
 CLEAN_PATH = BASE_DIR / "data/processed/abalone_clean.csv"
 LOG_PATH = BASE_DIR / "data/data_log.json"
+
+# Criterio de valores atípicos: se eliminan registros físicamente imposibles
+# (altura nula/negativa, altura mayor al largo, peso de concha mayor al peso total).
+# No se usan umbrales estadísticos: solo reglas de consistencia física.
+OUTLIER_RULES = [
+    "height <= 0",
+    "height > length",
+    "shellweight > wholeweight",
+]
 
 # 1. Cargar dataset original
 columnas = [
@@ -85,8 +97,19 @@ df.to_csv(CLEAN_PATH, index=False)
 # 6. Registrar las transformaciones
 registro = {
     "version": "v1",
-    "created_at": datetime.now(timezone.utc).isoformat(),
+    "created_at": date.today().isoformat(),
     "source": "data/raw/abalone_raw.csv",
+    "source_sha256": hashlib.sha256(RAW_PATH.read_bytes()).hexdigest(),
+    "environment": {
+        "python": platform.python_version(),
+        "pandas": pd.__version__,
+    },
+    "parameters": {
+        "age_formula": "age = rings + 1.5",
+        "sex_encoding": "one-hot (sex_F, sex_I, sex_M), dtype int",
+        "outlier_rules": OUTLIER_RULES,
+        "scaling": "none (se aplica en train_model.py dentro del Pipeline)",
+    },
     "output": "data/processed/abalone_clean.csv",
     "original_rows": len(df) + cantidad_eliminada,
     "processed_rows": len(df),
