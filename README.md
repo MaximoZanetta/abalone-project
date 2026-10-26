@@ -120,3 +120,4 @@ El archivo de experimentos registra cada ejecución con un identificador y una m
 ## Resultados
 
 - **v2** (`exp/hiperparametros`, Random Forest con grilla ampliada: `max_depth=8`, `min_samples_leaf=8`, `max_features=1.0`, `n_estimators=200`): MAE 1.4839, RMSE 2.1485, R² 0.5972 (mejora levemente sobre v1: MAE 1.5032).
+- **v3** (`exp/otro-algoritmo`, `GradientBoostingRegressor` con `StandardScaler` en el Pipeline: `learning_rate=0.05`, `max_depth=4`, `n_estimators=100`, `subsample=0.8`): MAE 1.4773, RMSE 2.1413, R² 0.5999.
