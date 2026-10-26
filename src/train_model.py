@@ -1,3 +1,4 @@
+import argparse
 import json
 import csv
 import uuid
@@ -23,9 +24,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATA_PATH = BASE_DIR / "data/processed/abalone_clean.csv"
 
-MODEL_PATH = BASE_DIR / "models/model_v1.pkl"
-METRICS_PATH = BASE_DIR / "results/metrics_v1.json"
 LOG_PATH = BASE_DIR / "results/experiments_log.csv"
+
+# Configuraciones de experimento: algoritmo y espacio de búsqueda
+CONFIGS = {
+    "rf_v1": {
+        "random_forest__n_estimators": [80, 150],
+        "random_forest__max_depth": [12, 20, None],
+        "random_forest__min_samples_leaf": [1, 3],
+    },
+    "rf_wide": {
+        "random_forest__n_estimators": [200, 400],
+        "random_forest__max_depth": [8, 10, 12, 15],
+        "random_forest__min_samples_leaf": [3, 5, 8],
+        "random_forest__max_features": ["sqrt", 1.0],
+    },
+}
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--version", default="v1", help="versión del modelo (v1, v2, ...)")
+parser.add_argument("--config", default="rf_v1", choices=CONFIGS, help="configuración de hiperparámetros")
+args = parser.parse_args()
+
+VERSION = args.version
+MODEL_PATH = BASE_DIR / f"models/model_{VERSION}.pkl"
+METRICS_PATH = BASE_DIR / f"results/metrics_{VERSION}.json"
 
 df = pd.read_csv(DATA_PATH)
 
@@ -49,11 +72,7 @@ pipe = Pipeline([
 ])
 
 # Espacio de búsqueda
-param_grid = {
-    "random_forest__n_estimators": [80, 150],
-    "random_forest__max_depth": [12, 20, None],
-    "random_forest__min_samples_leaf": [1, 3]
-}
+param_grid = CONFIGS[args.config]
 
 # Búsqueda con validación cruzada
 grid = GridSearchCV(
@@ -99,8 +118,9 @@ joblib.dump(
 )
 
 metricas = {
-    "model_version": "v1",
+    "model_version": VERSION,
     "algorithm": "RandomForestRegressor",
+    "config": args.config,
     "random_state": SEED,
     "test_size": 0.2,
     "cv_folds": 3,
@@ -123,7 +143,7 @@ with open(METRICS_PATH, "w", encoding="utf-8") as f:
 experimento = {
     "experiment_id": str(uuid.uuid4()),
     "timestamp": datetime.now(timezone.utc).isoformat(),
-    "model_version": "v1",
+    "model_version": VERSION,
     "hyperparameters": json.dumps(grid.best_params_, sort_keys=True),
     "random_state": SEED,
     "MAE": float(mae),
